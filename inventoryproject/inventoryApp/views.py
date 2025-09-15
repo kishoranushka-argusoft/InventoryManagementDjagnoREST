@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view
 from .serializers import ProductSerializer, CategorySerializer, SellerSerializer, TransactionSerializer
 from rest_framework import status
 
+
 # Create your views here.
 
 @api_view(['GET', 'POST'])
@@ -91,14 +92,10 @@ def category_detail_view(request, pk):
 @api_view(['GET','POST'])
 def seller_view(request):
     if request.method== 'GET':
-        seller = Sellers.objects.all()
-        serializer = SellerSerializer(seller, data= request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        sellers = Sellers.objects.all()
+        serializer = SellerSerializer(sellers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'POST':
         serializer = SellerSerializer(data = request.data)
@@ -131,4 +128,52 @@ def seller_detail_view(request, pk):
         
     elif request.method == 'DELETE':
         seller.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+@api_view(['GET','POST'])
+def transactions_view(request):
+    if request.method =='GET':
+        transactions = Transactions.objects.all()
+        serializer = TransactionSerializer(transactions, many= True)
+        print("🐍 File: inventoryApp/views.py | Line: 138 | transactions_view ~ serializer",serializer)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == 'POST':
+        serializer = TransactionSerializer(data= request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            print(validated_data)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        else:
+            print("****************", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+@api_view(['GET','PUT', 'DELETE'])
+def transaction_detail_view(request, pk):
+    try:
+        transaction = Transactions.objects.get(pk=pk)
+    except Transactions.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "GET":
+        serializer = TransactionSerializer(transaction)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    elif request.method == "PUT":
+        serializer = TransactionSerializer(transaction, data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    elif request.method == "DELETE":
+        transaction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
