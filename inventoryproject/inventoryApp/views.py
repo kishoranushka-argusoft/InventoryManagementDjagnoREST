@@ -13,10 +13,13 @@ def products_view(request):
     if request.method == 'GET':
         products = Products.objects.all()
         serializer = ProductSerializer(products, many=True)
+        print("🐍 File: inventoryApp/views.py | Line: 16 | products_view ~ serializer",serializer)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'POST':
         serializer = ProductSerializer(data = request.data)
+        print("🐍 File: inventoryApp/views.py | Line: 22 | products_view ~ serializer",serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
@@ -32,6 +35,7 @@ def product_detail_view(request, pk):
     
     if request.method == 'GET':
         serializer = ProductSerializer(product)
+        print("******************", serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'PUT':

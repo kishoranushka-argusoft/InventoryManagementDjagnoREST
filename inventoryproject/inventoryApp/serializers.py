@@ -3,9 +3,12 @@ from rest_framework import serializers
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    category = serializers.CharField(source= "category.name", read_only=True)
+    seller = serializers.StringRelatedField(many=True)
     class Meta:
         model= Products
         fields = "__all__"
+    
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,6 +21,8 @@ class SellerSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class TransactionSerializer(serializers.ModelSerializer):
+    product = serializers.CharField(source= "product.name", read_only=True)
+
     class Meta:
         model= Transactions
         fields = "__all__"
