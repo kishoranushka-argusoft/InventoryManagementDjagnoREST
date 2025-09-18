@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from .models import Products, Category, Sellers, Transactions
 from rest_framework.decorators import api_view
-from .serializers import ProductSerializer, CategorySerializer, SellerSerializer, TransactionSerializer
+from .serializers import ProductReadSerializer, ProductWriteSerializer, CategorySerializer, SellerSerializer, TransactionSerializer
 from rest_framework import status
 
 
@@ -12,15 +12,17 @@ from rest_framework import status
 def products_view(request):
     if request.method == 'GET':
         products = Products.objects.all()
-        serializer = ProductSerializer(products, many=True)
+        serializer = ProductReadSerializer(products, many=True)
         print("🐍 File: inventoryApp/views.py | Line: 16 | products_view ~ serializer",serializer)
-
+        print("--------------",serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'POST':
-        serializer = ProductSerializer(data = request.data)
+        serializer = ProductWriteSerializer(data = request.data)
         print("🐍 File: inventoryApp/views.py | Line: 22 | products_view ~ serializer",serializer)
         if serializer.is_valid():
+            validated_data = serializer.validated_data
+            print("&&&&&&&&&&&&&&&&&&&&&&", validated_data)
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -34,12 +36,12 @@ def product_detail_view(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == 'GET':
-        serializer = ProductSerializer(product)
+        serializer = ProductReadSerializer(product)
         print("******************", serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     elif request.method == 'PUT':
-        serializer = ProductSerializer(product, data=request.data)
+        serializer = ProductWriteSerializer(product, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -148,7 +150,7 @@ def transactions_view(request):
         serializer = TransactionSerializer(data= request.data)
         if serializer.is_valid():
             validated_data = serializer.validated_data
-            print(validated_data)
+            # print("^^^^^^^^^^^^^^^^^^^^^^^",validated_data)
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         

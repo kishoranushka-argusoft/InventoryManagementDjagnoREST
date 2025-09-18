@@ -11,7 +11,7 @@ class Category(models.Model):
     name = models.CharField(max_length=20)
     created_at = models.DateTimeField( default=timezone.now)
     updated_at = models.DateTimeField( default=timezone.now)
-    image = models.ImageField(upload_to='category_images/', default='photos/rice.png')
+    image = models.ImageField(upload_to='category_images/', default='defaultimg.png')
 
     def __str__(self):
         return self.name
@@ -30,7 +30,7 @@ class Sellers(models.Model):
 
 class Products(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    image = models.ImageField(upload_to='product_images/', default='photos/rice.png')
+    image = models.ImageField(upload_to='product_images/', default='defaultimg.png')
     name = models.CharField(max_length=30)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=False) 
     weight = models.DecimalField(max_digits=10, decimal_places=2, null=False)
