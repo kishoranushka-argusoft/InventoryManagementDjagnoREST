@@ -30,10 +30,19 @@ from datetime import datetime
 
     #     return super().create(validated_data)
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Category
+        fields = "__all__"
+
+class SellerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Sellers
+        fields = "__all__"
 
 class ProductReadSerializer(serializers.ModelSerializer):
-    category = serializers.CharField(source="category.name", read_only=True)
-    seller = serializers.StringRelatedField(many=True)
+    category = CategorySerializer(read_only=True)   
+    seller = SellerSerializer(many=True, read_only=True)
     class Meta:
         model= Products
         fields = "__all__"
@@ -60,18 +69,6 @@ class ProductWriteSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
     
 
-
-    
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model= Category
-        fields = "__all__"
-
-class SellerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model= Sellers
-        fields = "__all__"
 
 class TransactionSerializer(serializers.ModelSerializer):
     product = serializers.CharField(source= "product.name", read_only=True)
