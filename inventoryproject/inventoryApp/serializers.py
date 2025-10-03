@@ -50,20 +50,27 @@ class ProductReadSerializer(serializers.ModelSerializer):
 class ProductWriteSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset= Category.objects.all())
     seller = serializers.PrimaryKeyRelatedField(queryset=Sellers.objects.all(), many=True)
+    image = serializers.ImageField(required=False)
     class Meta:
         model = Products
         fields = "__all__"
 
 
     def to_internal_value(self, data):
-        seller = data.get("seller")
-        if seller and not isinstance(seller, list):
-            data["seller"] = [seller]
+    # Handle seller field when it comes from FormData
+        if hasattr(data, 'getlist'):
+            seller_list = data.getlist('seller')
+            data = data.copy()
+            data.setlist('seller', seller_list)
+        else:
+            seller = data.get("seller")
+            if seller and not isinstance(seller, list):
+                data["seller"] = [seller]
 
         expiry_date = data.get("expiry_date")
         if expiry_date and len(expiry_date) == 10:
             try:
-                data["expiry_date"]= datetime.strptime(expiry_date, "%y-%m-%d").isoformat()+ "Z"
+                data["expiry_date"]= datetime.strptime(expiry_date, "%Y-%m-%d").isoformat()+ "Z"
             except Exception:
                 pass
         return super().to_internal_value(data)

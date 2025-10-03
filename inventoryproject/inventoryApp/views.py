@@ -4,7 +4,7 @@ from .models import Products, Category, Sellers, Transactions
 from rest_framework.decorators import api_view
 from .serializers import ProductReadSerializer, ProductWriteSerializer, CategorySerializer, SellerSerializer, TransactionSerializer
 from rest_framework import status
-
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -182,4 +182,16 @@ def transaction_detail_view(request, pk):
         
     elif request.method == "DELETE":
         transaction.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def dashboard_view(request):
+    try:
+        products = Products.objects.count()
+        sellers = Sellers.objects.count()
+        categories = Category.objects.count()
+        transactions = Transactions.objects.count()
+        return Response({"products":products, "sellers":sellers, "categories":categories, "transactions":transactions})
+
+    except: 
         return Response(status=status.HTTP_204_NO_CONTENT)

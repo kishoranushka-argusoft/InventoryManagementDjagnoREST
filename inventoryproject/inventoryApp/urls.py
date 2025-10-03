@@ -11,7 +11,8 @@ urlpatterns = [
     path('sellers/', views.seller_view, name="seller_view"),
     path('seller/<pk>', views.seller_detail_view, name="seller_detail_view"),
     path('transactions/', views.transactions_view, name="transactions_view"),
-    path('transaction/<pk>', views.transaction_detail_view, name="transaction_detail_view")
+    path('transaction/<pk>', views.transaction_detail_view, name="transaction_detail_view"),
+    path('dashboard/', views.dashboard_view)
 
    
 ]
