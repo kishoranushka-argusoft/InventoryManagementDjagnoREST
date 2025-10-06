@@ -31,6 +31,7 @@ from datetime import datetime
     #     return super().create(validated_data)
 
 class CategorySerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(required=False)
     class Meta:
         model= Category
         fields = "__all__"
