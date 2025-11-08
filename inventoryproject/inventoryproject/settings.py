@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'inventoryproject.wsgi.application'
 DATABASES = {
    'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'inventorydb', 
+            'NAME': 'inventoryDB', 
             'USER': 'postgres',     
             'PASSWORD': 'argusadmin',
             'HOST': 'localhost',        
